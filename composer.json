@@ -1,0 +1,32 @@
+{
+    "name": "vohinc/data-collect-laravel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Casper Lai",
+            "email": "casper.lai@voh-design.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "illuminate/support": "~5.0"
+    },
+    "description": "",
+    "autoload": {
+        "psr-4": {
+            "Voh\\DataCollectLaravel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Voh\\DataCollectLaravel\\DataCollectProvider"
+            ],
+            "aliases": {
+                "DataCollectApi": "Voh\\DataCollectLaravel\\Facade\\DataCollectApi"
+            },
+            "dont-discover": []
+        }
+    }
+}
