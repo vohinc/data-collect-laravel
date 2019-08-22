@@ -3,6 +3,8 @@
 namespace Voh\DataCollectLaravel;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7;
 use Voh\DataCollectLaravel\Exceptions\MissingCodeException;
 use Voh\DataCollectLaravel\Exceptions\RequestFailException;
 
@@ -57,14 +59,23 @@ class ApiClient
             throw new MissingCodeException();
         }
 
-        $response = $this->client->request('POST', "/api/collect/{$this->code}", [
-            'json' => $data,
-        ]);
+        try {
+            $response = $this->client->request('POST', "/api/collect/{$this->code}", [
+                'json' => $data,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
 
-        if ($response->getStatusCode() === 201) {
-            return true;
+            if ($response->getStatusCode() === 201) {
+                return true;
+            }
+        } catch (ClientException $ex) {
+            if ($ex->hasResponse()) {
+                throw new RequestFailException(Psr7\str($ex->getResponse()));
+            }
+
+            throw new RequestFailException(Psr7\str($ex->getRequest()));
         }
-
-        throw new RequestFailException($response->getBody()->getContents());
     }
 }
